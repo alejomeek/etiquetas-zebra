@@ -32,14 +32,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-def detectar_tipo_etiqueta(texto):
-    """Detecta si la etiqueta es FLEX o Colecta"""
-    texto_lower = texto.lower()
-    if 'colecta' in texto_lower or 'punto de' in texto_lower:
-        return 'colecta'
-    else:
-        return 'flex'
-
 def detectar_bounding_box_etiqueta(page):
     """
     Detecta automáticamente el bounding box de la etiqueta en el PDF
@@ -148,22 +140,18 @@ def procesar_pdf_ml(pdf_bytes):
     """Procesa PDF de Mercado Libre para mostrar preview"""
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     page = doc[0]
-    
+
     # Renderizar a imagen solo para preview
     zoom = 2
     mat = fitz.Matrix(zoom, zoom)
     pix = page.get_pixmap(matrix=mat, alpha=False)
-    
+
     img_data = pix.tobytes("png")
     img = Image.open(io.BytesIO(img_data))
-    
-    # Extraer texto para detectar tipo
-    texto = page.get_text()
-    tipo = detectar_tipo_etiqueta(texto)
-    
+
     doc.close()
-    
-    return img, tipo
+
+    return img
 
 # ============== INTERFAZ PRINCIPAL ==============
 st.title("🏷️ Sistema de Etiquetas Zebra")
@@ -181,15 +169,9 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     with st.spinner("Procesando etiqueta..."):
         pdf_bytes = uploaded_file.read()
-        img_ml, tipo_etiqueta = procesar_pdf_ml(pdf_bytes)
+        img_ml = procesar_pdf_ml(pdf_bytes)
 
         st.subheader("Vista Previa")
-
-        # Mostrar tipo de etiqueta
-        if tipo_etiqueta == 'flex':
-            st.success("✅ Etiqueta FLEX detectada")
-        else:
-            st.info("ℹ️ Etiqueta COLECTA detectada")
 
         # Mostrar imagen preview
         st.image(img_ml, use_container_width=True)
@@ -222,7 +204,7 @@ if uploaded_file:
             st.download_button(
                 label="💾 PNG Preview",
                 data=buf_png.getvalue(),
-                file_name=f"etiqueta_{tipo_etiqueta}_{uploaded_file.name.replace('.pdf', '.png')}",
+                file_name="etiqueta_preview.png",
                 mime="image/png",
                 use_container_width=True
             )
@@ -233,7 +215,7 @@ if uploaded_file:
                 st.download_button(
                     label="🏷️ PDF 10x15cm",
                     data=pdf_10x15cm,
-                    file_name=f"etiqueta_{tipo_etiqueta}_10x15cm.pdf",
+                    file_name="etiqueta_10x15cm.pdf",
                     mime="application/pdf",
                     use_container_width=True,
                     type="primary"
@@ -244,7 +226,7 @@ if uploaded_file:
             st.download_button(
                 label="📄 PDF Original",
                 data=pdf_bytes,
-                file_name=f"etiqueta_{tipo_etiqueta}_ML_original.pdf",
+                file_name="etiqueta_ML_original.pdf",
                 mime="application/pdf",
                 use_container_width=True
             )
@@ -262,16 +244,9 @@ else:
 
         1. **Descargar** la etiqueta PDF desde Mercado Libre
         2. **Arrastrar** el PDF a esta aplicación
-        3. **Ver preview** de la etiqueta detectada
+        3. **Ver preview** de la etiqueta
         4. **Descargar PDF 10x15cm** (recomendado para Zebra)
         5. **Imprimir** en la impresora térmica Zebra GC420t
-
-        ### Tipos de etiqueta:
-
-        - **FLEX:** Envíos estándar de Mercado Libre
-        - **COLECTA:** Retiros en punto de entrega
-
-        Ambos tipos se procesan automáticamente.
 
         ### ¿Qué hace el procesamiento automático?
 
