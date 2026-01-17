@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos locales del proyecto
+contador_diario.json
+contador_diario_v2_backup.json
+*.bat
+test_*.py
+imprimir_directo.py
+
+# Archivos temporales
+etiqueta.pdf
+1_original.png
+2_recortada.png
+3_final_10x15cm.png
+
+# Versiones antiguas
+app_etiquetas_ml v*.py
+app_etiquetas_ml.py
+
+# Streamlit secrets local
+.streamlit/secrets.toml
