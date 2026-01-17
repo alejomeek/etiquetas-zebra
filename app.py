@@ -4,6 +4,7 @@ from PIL import Image
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
 
 # Configuración de la página
 st.set_page_config(
@@ -74,14 +75,17 @@ def crear_pdf_10x15(imagen_pil):
     # Crear PDF
     c = canvas.Canvas(pdf_buffer, pagesize=(width, height))
     
-    # Guardar imagen temporalmente
+    # Convertir PIL Image a ImageReader
     img_buffer = io.BytesIO()
     imagen_pil.save(img_buffer, format='PNG')
     img_buffer.seek(0)
     
+    # Usar ImageReader para que reportlab pueda leer el buffer
+    img_reader = ImageReader(img_buffer)
+    
     # Dibujar imagen en PDF ocupando toda la página
     c.drawImage(
-        img_buffer,
+        img_reader,
         0, 0,  # Posición x, y
         width=width,
         height=height,
