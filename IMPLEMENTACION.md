@@ -69,10 +69,11 @@ Se implementó exitosamente la **detección automática de bounding box** y **ge
 - Mensajes actualizados para guiar al usuario
 
 ### requirements.txt
-**Sin cambios** - Solo se usan las librerías existentes:
+Se fijaron las versiones del servidor web para asegurar despliegues reproducibles:
+- Streamlit 1.61.1 - Framework de la app
+- Starlette 1.3.1 - Dependencia compatible con el middleware GZip de Streamlit
 - PyMuPDF (fitz) - Para manipulación de PDFs
 - Pillow (PIL) - Para preview de imágenes
-- Streamlit - Framework de la app
 
 ## 🎯 Cómo Usar la App
 
